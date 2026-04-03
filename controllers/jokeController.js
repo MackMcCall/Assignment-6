@@ -26,17 +26,37 @@ async function fetchJokeById(req, res) {
     }
 }
 
-async function fetchJokesByType(req, res) {
-    const type = req.params.type;
+async function fetchRandomJoke(req, res) {
+    try {
+        const joke = await model.getRandomJoke();
+        res.json(joke);
+    } catch (err) {
+        console.error(err);
+        res.status(500).send("Server error");
+    }
+}
+
+async function fetchJokeCategories(req, res) {
+    try {
+        const categories = await model.getJokeCategories();
+        res.json(categories);
+    } catch (err) {
+        console.error(err);
+        res.status(500).send("Server error");
+    }
+}
+
+async function fetchJokesByCategory(req, res) {
+    const category = req.params.category;
     const price = req.query.price;
     let params;
-    if (type) {
+    if (category) {
         try {
-            params = [type];
+            params = [category];
             if (price) {
                 params.push(price);
             }
-            const jokes = await model.getJokesByType(params);
+            const jokes = await model.getJokesByCategory(params);
             res.json(jokes);
         } catch (err) {
             console.error(err);
@@ -84,7 +104,9 @@ async function createJoke(req, res) {
 module.exports = {
     fetchAllJokes,
     fetchJokeById,
-    fetchJokesByType,
+    fetchRandomJoke,
+    fetchJokeCategories,
+    fetchJokesByCategory,
     removeJoke,
     createJoke,
 };

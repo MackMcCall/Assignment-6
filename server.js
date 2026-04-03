@@ -8,9 +8,9 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(express.static("public"));
 
-const jokeRoutes = require("./routes/jokeRoutes");
+const jokebookRoutes = require("./routes/jokebookRoutes");
 
-app.use("/api/jokes", jokeRoutes);
+app.use("/jokebook/", jokebookRoutes);
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, function () {

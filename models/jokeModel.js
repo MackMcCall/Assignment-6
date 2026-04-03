@@ -14,11 +14,22 @@ async function getOneJokeById(id) {
     return result.rows[0];
 }
 
-async function getJokesByType(params) {
-    const queryText = "SELECT * FROM jokes where type= $1";
-    if (params.length > 1) {
-        queryText += " AND price <= $2";
-    }
+async function getRandomJoke() {
+    const result = await pool.query(
+        "SELECT * FROM jokes ORDER BY RANDOM() LIMIT 1;",
+    );
+    return result.rows[0];
+}
+
+async function getJokeCategories() {
+    const result = await pool.query(
+        "SELECT DISTINCT category FROM jokes WHERE category IS NOT NULL ORDER BY category;",
+    );
+    return result.rows.map((row) => row.category);
+}
+
+async function getJokesByCategory(params) {
+    const queryText = "SELECT * FROM jokes where category= $1";
     const result = await pool.query(queryText, params);
     return result.rows;
 }
@@ -40,7 +51,9 @@ async function addJoke(setup, delivery, category) {
 module.exports = {
     getAllJokes,
     getOneJokeById,
-    getJokesByType,
+    getRandomJoke,
+    getJokeCategories,
+    getJokesByCategory,
     deleteJoke,
     addJoke,
 };
